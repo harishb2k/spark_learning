@@ -130,8 +130,8 @@ object RunJob extends App {
 
 
     jdbcDF.createOrReplaceTempView("names")
-    jdbcDF.sqlContext.sql("select /*+ BROADCAST(names) */ * from names where id=1").collect.foreach(println)
-    // jdbcDF.sqlContext.sql("select /*+ HARISH(names) */ * from names where id=1").collect.foreach(println)
+    // jdbcDF.sqlContext.sql("select /*+ BROADCAST(names) */ * from names where id=1").collect.foreach(println)
+    jdbcDF.sqlContext.sql("select /*+ HARISH(names) */ * from names where id=1 and name='a'").collect.foreach(println)
     // jdbcDF.sqlContext.sql("select * from names where id=1").collect.foreach(println)
 
 

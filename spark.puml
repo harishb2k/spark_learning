@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+SparkSession -> SparkSession: Init object
+SparkSession -> BaseSessionStateBuilder: instantiateSessionState
+BaseSessionStateBuilder -> SparkSession: SessionState
+note over SessionState, SessionState
+State session has everything:
+1. Parser
+2. Analyzer
+3. Catalog
+4. ...
+end note
+
+SparkSession -> SparkSession: baseRelationToDataFrame to build DF
+SparkSession -> Dataset: SparkSession
+note over SparkSession, SparkSession
+This is where data frame is created.
+Dataset has the reference of sessions and session state
+end note
+
+Dataset -> SessionState: executePlan(logicalPlan)
+SessionState -> QueryExecution: analyzed()
+QueryExecution -> analyzer: executeAndCheck(logicalPlan)
+analyzer -> RuleExecutor: execute(logicalPlan)
+note over RuleExecutor, RuleExecutor
+analyzer is the subclass of RuleExecutor.
+
+RuleExecutor now runs the loop of batches, which is a list of all rules
+end note
+
+analyzer -> CheckAnalysis: checkAnalysis()
+note over CheckAnalysis, CheckAnalysis
+CheckAnalysis class does all checks:
+1. UnresolvedRelation - if a relation is still not resolved
+2. ...
+end note
+
+@enduml
